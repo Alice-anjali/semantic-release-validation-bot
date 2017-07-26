@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/Alice-anjali/semantic-release-validation-bot#readme",
   "dependencies": {
+    "github": "^9.2.0",
+    "github-app": "^3.0.0",
     "github-webhook-handler": "^0.6.0"
   }
 }
