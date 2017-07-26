@@ -1,33 +1,15 @@
-const secret = process.env.WEBHOOK_SECRET
+module.exports = function (robot) {
+  robot.on('issues', handleIssue.bind(null, robot))
+}
 
-const http = require('http')
-const webHookHandler = require('github-webhook-handler')({
-  path: '/',
-  secret: secret
-})
-const app = require('github-app')({
-  id: process.env.APP_ID,
-  cert: require('fs').readFileSync('.data/private-key.pem')
-})
+function handleIssue (robot, context) {
+  const api = context.github
+  const {installation, repository, issue} = context.payload
 
-http.createServer(handleRequest).listen(3000)
-
-webHookHandler.on('issues', (event) => {
-  // ignore all issue events other than new issue opened
-  if (event.payload.action !== 'opened') return
-
-  const {installation, repository, issue} = event.payload
-  app.asInstallation(installation.id).then((github) => {
-    github.issues.createComment({
-      owner: repository.owner.login,
-      repo: repository.name,
-      number: issue.number,
-      body: 'Welcome to the robot uprising.'
-    })
+  api.issues.createComment({
+    owner: repository.owner.login,
+    repo: repository.name,
+    number: issue.number,
+    body: 'Welcome to the robot uprising!!!'
   })
-})
-
-function handleRequest (request, response) {
-  if (request.method !== 'POST') return response.end('ok')
-  webHookHandler(request, response, () => response.end('ok'))
 }
