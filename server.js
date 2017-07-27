@@ -1,15 +1,7 @@
-module.exports = function (robot) {
-  robot.on('issues', handleIssue.bind(null, robot))
-}
+module.exports = probotPlugin
 
-function handleIssue (robot, context) {
-  const api = context.github
-  const {installation, repository, issue} = context.payload
+const handlePullRequestChange = require('./lib/handle-pull-request')
 
-  api.issues.createComment({
-    owner: repository.owner.login,
-    repo: repository.name,
-    number: issue.number,
-    body: 'Welcome to the robot uprising!!!'
-  })
+function probotPlugin (robot) {
+  robot.on('pull_request.opened', handlePullRequestChange.bind(null, robot))
 }
